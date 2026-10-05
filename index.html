@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mercado Cuba — Catálogo</title>
+<style>
+:root{--primary:#0b6b4f;--dark:#12342b;--light:#f5f7f6;--accent:#f2b84b;--text:#18221f}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f7f8f7;color:var(--text)}
+header{background:white;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px #00000012}
+.top{background:var(--dark);color:white;padding:9px 5%;font-size:14px;display:flex;justify-content:space-between}
+.nav{padding:15px 5%;display:flex;align-items:center;gap:20px}.logo{font-size:25px;font-weight:800;color:var(--primary);white-space:nowrap}
+.search{flex:1;display:flex}.search input{width:100%;padding:13px 16px;border:1px solid #ddd;border-radius:9px 0 0 9px;font-size:15px}.search button{border:0;background:var(--primary);color:white;padding:0 20px;border-radius:0 9px 9px 0;font-size:18px}
+.cart{border:0;background:#eef6f2;padding:12px 16px;border-radius:9px;font-weight:bold;cursor:pointer}
+.hero{margin:22px 5%;border-radius:18px;padding:42px;min-height:250px;background:linear-gradient(120deg,#0b6b4f,#1b9270);color:white;display:flex;align-items:center;justify-content:space-between;overflow:hidden}
+.hero h1{font-size:42px;margin:0 0 10px}.hero p{font-size:18px;max-width:620px;line-height:1.5}.hero button{background:var(--accent);border:0;padding:13px 20px;border-radius:8px;font-weight:bold;cursor:pointer}
+.container{padding:0 5% 50px}.section-title{display:flex;justify-content:space-between;align-items:center;margin:30px 0 15px}.section-title h2{margin:0}
+.categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.cat{background:white;padding:18px 12px;border-radius:12px;text-align:center;cursor:pointer;border:1px solid #e7ebe9;transition:.2s}.cat:hover{transform:translateY(-2px);border-color:var(--primary)}.cat .icon{font-size:30px;margin-bottom:8px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;background:white;padding:15px;border-radius:12px;margin:20px 0}.controls select,.controls input{padding:11px;border:1px solid #ddd;border-radius:8px}
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}.card{background:white;border-radius:13px;overflow:hidden;border:1px solid #e5e9e7;display:flex;flex-direction:column}.pic{height:180px;background:linear-gradient(135deg,#eef3f1,#dce8e3);display:flex;align-items:center;justify-content:center;font-size:60px}.info{padding:14px;display:flex;flex-direction:column;flex:1}.tag{font-size:12px;color:var(--primary);font-weight:bold}.name{font-weight:700;margin:7px 0;min-height:40px}.price{font-size:20px;font-weight:800;margin-top:auto}.old{font-size:13px;color:#888;text-decoration:line-through;margin-right:6px}.add{margin-top:12px;border:0;background:var(--primary);color:white;padding:11px;border-radius:8px;cursor:pointer;font-weight:bold}
+footer{background:var(--dark);color:white;padding:35px 5%;margin-top:20px}.footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:25px}footer h3{margin-top:0}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:20;align-items:center;justify-content:center}.modalbox{background:white;width:min(500px,92%);max-height:85vh;overflow:auto;border-radius:15px;padding:22px}.modalbox h2{margin-top:0}.close{float:right;border:0;background:#eee;border-radius:50%;width:32px;height:32px;cursor:pointer}.cartrow{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:12px 0}.checkout{width:100%;background:var(--accent);border:0;padding:13px;border-radius:8px;font-weight:bold;margin-top:15px}
+@media(max-width:700px){.top{font-size:12px}.nav{flex-wrap:wrap}.logo{width:100%}.search{order:3;width:100%}.hero{padding:28px}.hero h1{font-size:30px}.hero{min-height:210px}.products{grid-template-columns:repeat(2,minmax(0,1fr))}.pic{height:140px;font-size:45px}}
+.forminput{display:block;width:100%;margin:7px 0 14px;padding:12px;border:1px solid #ddd;border-radius:8px;font:inherit}label{font-weight:600;font-size:14px;display:block}.adminbtn{border:0;background:#eef6f2;color:#0b6b4f;padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer}.orderbox{border:1px solid #e1e7e4;border-radius:10px;padding:14px;margin:10px 0}.status{padding:5px 8px;border-radius:6px;background:#fff3d6;font-size:12px;font-weight:bold}</style>
+</head>
+<body>
+<header>
+<div class="top"><span>Envíos y entregas a Cuba</span><span>Atención al cliente • WhatsApp</span></div>
+<div class="nav">
+<div class="logo">Mercado Cuba</div>
+<div class="search"><input id="search" placeholder="Buscar productos..." oninput="render()"><button>⌕</button></div>
+<button class="cart" onclick="openCart()">🛒 Carrito (<span id="count">0</span>)</button>
+</div>
+</header>
+
+<section class="hero">
+<div><h1>Todo lo que necesitas, en un solo lugar</h1><p>Catálogo de energía, alimentos, tecnología, transporte y artículos para el hogar. Compra fácil y descubre nuevas ofertas.</p><button onclick="document.getElementById('catalogo').scrollIntoView()">Ver catálogo</button></div>
+<div style="font-size:100px">🛍️</div>
+</section>
+
+<main class="container">
+<div class="section-title"><h2>Categorías populares</h2></div>
+<div class="categories">
+<div class="cat" onclick="setCat('EcoFlow')"><div class="icon">🔋</div>EcoFlow</div>
+<div class="cat" onclick="setCat('Alimentos')"><div class="icon">🥫</div>Alimentos</div>
+<div class="cat" onclick="setCat('Celulares')"><div class="icon">📱</div>Celulares</div>
+<div class="cat" onclick="setCat('Motorinas')"><div class="icon">🛵</div>Motorinas</div>
+<div class="cat" onclick="setCat('Motos')"><div class="icon">🏍️</div>Motos</div>
+<div class="cat" onclick="setCat('Bicicletas eléctricas')"><div class="icon">🚲</div>Bicicletas eléctricas</div>
+<div class="cat" onclick="setCat('Palancas eléctricas')"><div class="icon">🛴</div>Palancas eléctricas</div>
+<div class="cat" onclick="setCat('Electrodomésticos')"><div class="icon">🏠</div>Electrodomésticos</div>
+</div>
+
+<div id="catalogo" class="section-title"><h2>Productos</h2><span id="resultados"></span></div>
+<div style="background:#eaf7f0;color:#0b6b4f;padding:12px 15px;border-radius:10px;margin:15px 0;font-weight:bold">💚 Precio competitivo: nuestra maqueta muestra precios de lanzamiento por debajo de la referencia.</div><div class="controls">
+<select id="category" onchange="render()"><option value="">Todas las categorías</option><option>EcoFlow</option><option>Alimentos</option><option>Celulares</option><option>Motorinas</option><option>Motos</option><option>Bicicletas eléctricas</option><option>Palancas eléctricas</option><option>Electrodomésticos</option></select>
+<select id="sort" onchange="render()"><option value="relevance">Relevancia</option><option value="low">Precio menor</option><option value="high">Precio mayor</option></select>
+<input id="min" type="number" placeholder="Precio mínimo" oninput="render()">
+<input id="max" type="number" placeholder="Precio máximo" oninput="render()"><button onclick="clearFilters()" style="padding:11px;border:0;border-radius:8px;background:#eef6f2;color:#0b6b4f;font-weight:bold;cursor:pointer">Limpiar filtros</button>
+</div>
+<div id="products" class="products"></div>
+</main>
+
+<footer><div class="footgrid">
+<div><h3>Mercado Cuba</h3><p>Tu catálogo digital para compras y envíos a Cuba.</p></div>
+<div><h3>Categorías</h3><p>EcoFlow · Alimentos · Tecnología · Transporte · Hogar</p></div>
+<div><h3>Ayuda</h3><p>Preguntas frecuentes<br>Envíos<br>Contacto</p></div>
+<div><h3>Contacto</h3><p>WhatsApp: +1 (000) 000-0000<br>Email: ventas@tudominio.com</p><button class="adminbtn" onclick="openAdmin()">Ver pedidos</button></div>
+</div></footer>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeCart()">
+<div class="modalbox">
+<button class="close" onclick="closeCart()">×</button>
+<div id="checkoutStep">
+<h2>Tu carrito</h2>
+<div id="cartitems"></div>
+<h3>Total: $<span id="total">0.00</span></h3>
+<button class="checkout" onclick="startCheckout()">Comprar producto</button>
+</div>
+
+<div id="customerStep" style="display:none">
+<h2>Datos de entrega</h2>
+<p style="color:#666">Completa los datos del destinatario para generar tu pedido.</p>
+<label>Nombre completo<input id="custName" class="forminput" placeholder="Nombre del destinatario"></label>
+<label>Teléfono<input id="custPhone" class="forminput" placeholder="+53 ..."></label>
+<label>Provincia
+<select id="province" class="forminput" onchange="updateMunicipios()">
+<option value="">Selecciona provincia</option>
+<option>Pinar del Río</option><option>Artemisa</option><option>La Habana</option><option>Mayabeque</option>
+<option>Matanzas</option><option>Villa Clara</option><option>Cienfuegos</option><option>Sancti Spíritus</option>
+<option>Ciego de Ávila</option><option>Camagüey</option><option>Las Tunas</option><option>Holguín</option>
+<option>Granma</option><option>Santiago de Cuba</option><option>Guantánamo</option><option>Isla de la Juventud</option>
+</select></label>
+<label>Municipio<select id="municipality" class="forminput"><option value="">Selecciona municipio</option></select></label>
+<label>Dirección<input id="address" class="forminput" placeholder="Calle, número, reparto, referencia"></label>
+<button class="checkout" onclick="showPayment()">Continuar al pago</button>
+</div>
+
+<div id="paymentStep" style="display:none">
+<h2>Pago por Zelle</h2>
+<div id="orderSummary"></div>
+<div style="background:#eef6f2;padding:16px;border-radius:10px;margin:15px 0">
+<p style="margin:0 0 7px">Envía el total del pedido a:</p>
+<div style="font-size:18px;font-weight:800;background:white;padding:12px;border-radius:8px;word-break:break-all">thomasroberthidalgo@gmail.com</div>
+<p style="font-size:13px;color:#555;margin-bottom:0">Después de realizar el pago, conserva el comprobante para confirmar el pedido.</p>
+</div>
+<button class="checkout" onclick="confirmOrder()">Ya realicé el pago / Confirmar pedido</button>
+</div>
+
+<div id="successStep" style="display:none;text-align:center">
+<div style="font-size:55px">✅</div>
+<h2>¡Pedido recibido!</h2>
+<p>Tu número de pedido es:</p>
+<div id="orderNumber" style="font-size:28px;font-weight:800;color:#0b6b4f"></div>
+<div id="successDetails" style="text-align:left;background:#f7f8f7;padding:15px;border-radius:10px;margin-top:15px"></div>
+<button class="checkout" onclick="closeCart()">Cerrar</button>
+</div>
+</div></div>
+
+<div id="adminModal" class="modal" onclick="if(event.target===this)closeAdmin()">
+<div class="modalbox" style="width:min(850px,94%)">
+<button class="close" onclick="closeAdmin()">×</button>
+<h2>Panel de pedidos</h2>
+<p style="color:#666">Panel protegido. Inicia sesión para consultar y actualizar pedidos.</p>
+<div style="display:flex;gap:8px;margin-bottom:12px"><input id="adminKey" type="password" class="forminput" style="margin:0" placeholder="Contraseña de administrador"><button class="adminbtn" onclick="adminLogin()">Iniciar sesión</button></div>
+<div id="adminOrders"></div>
+</div></div>
+<script>
+const products=[
+/* EcoFlow */
+["EcoFlow","EcoFlow RIVER 2",224.99,"🔋"],["EcoFlow","EcoFlow RIVER 2 Max",359.99,"🔋"],["EcoFlow","EcoFlow RIVER 2 Pro",539.99,"🔋"],["EcoFlow","EcoFlow DELTA 2",809.99,"🔋"],["EcoFlow","EcoFlow DELTA 2 Max",1439.99,"🔋"],["EcoFlow","EcoFlow DELTA 3",899.99,"🔋"],["EcoFlow","EcoFlow DELTA 3 Plus",1169.99,"🔋"],["EcoFlow","EcoFlow DELTA Pro",2249.99,"🔋"],["EcoFlow","EcoFlow DELTA Pro 3",2969.99,"🔋"],["EcoFlow","Panel solar EcoFlow 110W",179.99,"☀️"],["EcoFlow","Panel solar EcoFlow 160W",269.99,"☀️"],["EcoFlow","Panel solar EcoFlow 220W",359.99,"☀️"],["EcoFlow","Panel solar EcoFlow 400W",629.99,"☀️"],["EcoFlow","Batería adicional EcoFlow",719.99,"🔋"],
+
+/* Alimentos */
+["Alimentos","Arroz blanco 5 lb",7.19,"🍚"],["Alimentos","Arroz blanco 10 lb",13.49,"🍚"],["Alimentos","Frijoles negros 1 kg",4.49,"🫘"],["Alimentos","Frijoles colorados 1 kg",4.49,"🫘"],["Alimentos","Lentejas 1 kg",4.04,"🫘"],["Alimentos","Aceite vegetal 1 L",4.49,"🫗"],["Alimentos","Aceite vegetal 2 L",8.09,"🫗"],["Alimentos","Azúcar blanca 4 lb",5.39,"🍬"],["Alimentos","Harina de trigo 2 lb",4.04,"🌾"],["Alimentos","Leche en polvo 1 kg",8.09,"🥛"],["Alimentos","Café 250 g",6.29,"☕"],["Alimentos","Café 500 g",10.79,"☕"],["Alimentos","Pasta espagueti 1 lb",2.69,"🍝"],["Alimentos","Salsa de tomate 15 oz",2.24,"🍅"],["Alimentos","Atún en lata",2.69,"🐟"],["Alimentos","Sardinas en lata",2.24,"🐟"],["Alimentos","Mortadella 400 g",4.49,"🥩"],["Alimentos","Picadillo de pollo 500 g",4.94,"🍗"],["Alimentos","Pollo en cuartos 10 lb",17.99,"🍗"],["Alimentos","Muslos de pollo 5 lb",11.69,"🍗"],["Alimentos","Carne de cerdo 5 lb",26.99,"🥩"],["Alimentos","Sal 1 kg",1.79,"🧂"],["Alimentos","Galletas surtidas",4.49,"🍪"],["Alimentos","Cereal familiar",6.29,"🥣"],["Alimentos","Combo familiar de alimentos",44.99,"🛒"],["Alimentos","Combo básico de alimentos",26.99,"🛒"],["Alimentos","Combo mensual de alimentos",89.99,"🛒"],
+
+/* Celulares */
+["Celulares","Tecno Pop 7",80.99,"📱"],["Celulares","Tecno Spark Go",98.99,"📱"],["Celulares","Tecno Spark 20",134.99,"📱"],["Celulares","Tecno Spark 20 Pro",179.99,"📱"],["Celulares","Tecno Camon 20",206.99,"📱"],["Celulares","Samsung Galaxy A06",107.99,"📱"],["Celulares","Samsung Galaxy A16",143.99,"📱"],["Celulares","Samsung Galaxy A25",224.99,"📱"],["Celulares","Samsung Galaxy A35",296.99,"📱"],["Celulares","Samsung Galaxy A55",359.99,"📱"],["Celulares","Xiaomi Redmi 14C",107.99,"📱"],["Celulares","Xiaomi Redmi Note 13",179.99,"📱"],["Celulares","Xiaomi Redmi Note 14",206.99,"📱"],["Celulares","Xiaomi Poco X6",269.99,"📱"],["Celulares","iPhone 13",449.99,"📱"],["Celulares","iPhone 14",539.99,"📱"],["Celulares","iPhone 15",629.99,"📱"],["Celulares","iPhone 16",719.99,"📱"],["Celulares","Cargador USB-C rápido",17.99,"🔌"],["Celulares","Power bank 20,000 mAh",26.99,"🔋"],
+
+/* Motorinas */
+["Motorinas","Motorina eléctrica 500W",629.99,"🛵"],["Motorinas","Motorina eléctrica 800W",719.99,"🛵"],["Motorinas","Motorina eléctrica 1000W",809.99,"🛵"],["Motorinas","Motorina eléctrica 1500W",989.99,"🛵"],["Motorinas","Motorina eléctrica 2000W",1169.99,"🛵"],["Motorinas","Motorina eléctrica doble batería",1349.99,"🛵"],["Motorinas","Motorina eléctrica de tres ruedas",1439.99,"🛵"],["Motorinas","Scooter eléctrico urbano",449.99,"🛵"],["Motorinas","Scooter eléctrico plegable",539.99,"🛵"],["Motorinas","Batería para motorina",269.99,"🔋"],["Motorinas","Cargador para motorina",71.99,"🔌"],["Motorinas","Casco para motorina",44.99,"🪖"],
+
+/* Motos de combustión */
+["Motos","Moto de combustión 100cc",1079.99,"🏍️"],["Motos","Moto de combustión 125cc",1349.99,"🏍️"],["Motos","Moto de combustión 150cc",1619.99,"🏍️"],["Motos","Moto de combustión 200cc",2069.99,"🏍️"],["Motos","Moto de combustión 250cc",2519.99,"🏍️"],["Motos","Moto de trabajo 125cc",1439.99,"🏍️"],["Motos","Moto tipo scooter 125cc",1529.99,"🏍️"],["Motos","Moto doble propósito 200cc",2249.99,"🏍️"],["Motos","Moto deportiva 250cc",2699.99,"🏍️"],["Motos","Casco integral para moto",62.99,"🪖"],["Motos","Baúl trasero para moto",80.99,"🧳"],
+
+/* Bicicletas eléctricas */
+["Bicicletas eléctricas","Bicicleta eléctrica 350W",539.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica 500W",629.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica 750W",719.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica 1000W",899.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica 1500W",1079.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica 2000W",1259.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica plegable",674.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica de montaña",1079.99,"🚵"],["Bicicletas eléctricas","Bicicleta eléctrica urbana",764.99,"🚲"],["Bicicletas eléctricas","Bicicleta eléctrica fat tire",1169.99,"🚲"],["Bicicletas eléctricas","Batería para bicicleta eléctrica",269.99,"🔋"],
+
+/* Palancas eléctricas / scooters */
+["Palancas eléctricas","Palanca eléctrica 350W",314.99,"🛴"],["Palancas eléctricas","Palanca eléctrica 500W",404.99,"🛴"],["Palancas eléctricas","Palanca eléctrica 800W",494.99,"🛴"],["Palancas eléctricas","Palanca eléctrica 1000W",629.99,"🛴"],["Palancas eléctricas","Palanca eléctrica todo terreno",809.99,"🛴"],["Palancas eléctricas","Palanca eléctrica doble motor",899.99,"🛴"],["Palancas eléctricas","Palanca eléctrica plegable",359.99,"🛴"],["Palancas eléctricas","Scooter eléctrico de largo alcance",719.99,"🛴"],
+
+/* Electrodomésticos */
+["Electrodomésticos","Refrigerador 10 pies",629.99,"🧊"],["Electrodomésticos","Refrigerador 14 pies",809.99,"🧊"],["Electrodomésticos","Refrigerador 18 pies",1079.99,"🧊"],["Electrodomésticos","Congelador compacto",359.99,"❄️"],["Electrodomésticos","Congelador 7 pies",539.99,"❄️"],["Electrodomésticos","Congelador 10 pies",674.99,"❄️"],["Electrodomésticos","Cocina de inducción",71.99,"🍳"],["Electrodomésticos","Cocina eléctrica de 2 hornillas",89.99,"🍳"],["Electrodomésticos","Cocina eléctrica de 4 hornillas",179.99,"🍳"],["Electrodomésticos","Horno eléctrico",116.99,"🔥"],["Electrodomésticos","Microondas",134.99,"📡"],["Electrodomésticos","Olla arrocera 2.2 L",44.99,"🍚"],["Electrodomésticos","Olla de presión eléctrica",80.99,"🍲"],["Electrodomésticos","Freidora de aire",71.99,"🍟"],["Electrodomésticos","Licuadora",44.99,"🥤"],["Electrodomésticos","Batidora",35.99,"🥣"],["Electrodomésticos","Cafetera eléctrica",40.49,"☕"],["Electrodomésticos","Tostadora",31.49,"🍞"],["Electrodomésticos","Ventilador de pedestal",53.99,"🌀"],["Electrodomésticos","Ventilador recargable",71.99,"🌀"],["Electrodomésticos","Aire acondicionado 12,000 BTU",539.99,"❄️"],["Electrodomésticos","Aire acondicionado 18,000 BTU",809.99,"❄️"],["Electrodomésticos","Televisor Smart 32 pulgadas",179.99,"📺"],["Electrodomésticos","Televisor Smart 43 pulgadas",269.99,"📺"],["Electrodomésticos","Televisor Smart 50 pulgadas",359.99,"📺"],["Electrodomésticos","Televisor Smart 55 pulgadas",449.99,"📺"],["Electrodomésticos","Lavadora automática",449.99,"🧺"],["Electrodomésticos","Lavadora semiautomática",269.99,"🧺"],["Electrodomésticos","Secadora de ropa",539.99,"🧺"],["Electrodomésticos","Plancha de ropa",26.99,"👕"],["Electrodomésticos","Aspiradora",89.99,"🧹"],["Electrodomésticos","Calentador de agua",179.99,"🚿"]
+];
+let cart=[];
+function setCat(c){document.getElementById('category').value=c;document.getElementById('catalogo').scrollIntoView();render()}
+function clearFilters(){document.getElementById('search').value='';document.getElementById('category').value='';document.getElementById('sort').value='relevance';document.getElementById('min').value='';document.getElementById('max').value='';render()}
+function render(){
+ const q=document.getElementById('search').value.toLowerCase(), c=document.getElementById('category').value;
+ let min=+document.getElementById('min').value||0,max=+document.getElementById('max').value||Infinity;
+ let arr=products.filter(p=>(!c||p[0]===c)&&(!q||p[1].toLowerCase().includes(q))&&p[2]>=min&&p[2]<=max);
+ const s=document.getElementById('sort').value;if(s==='low')arr.sort((a,b)=>a[2]-b[2]);if(s==='high')arr.sort((a,b)=>b[2]-a[2]);
+ document.getElementById('resultados').textContent=arr.length+' productos';
+ document.getElementById('products').innerHTML=arr.map((p,i)=>`<article class="card"><div class="pic">${p[3]}</div><div class="info"><div class="tag">${p[0]}</div><div class="name">${p[1]}</div><div class="price">$${p[2].toFixed(2)}</div><button class="add" onclick="add('${p[1]}',${p[2]})">Comprar / agregar</button></div></article>`).join('');
+}
+function add(name,price){
+  cart.push({name,price,qty:1});
+  update();
+}
+function update(){
+  document.getElementById('count').textContent=cart.reduce((n,x)=>n+x.qty,0);
+}
+function totalCart(){return cart.reduce((n,x)=>n+x.price*x.qty,0)}
+function openCart(){
+  document.getElementById('checkoutStep').style.display='block';
+  document.getElementById('customerStep').style.display='none';
+  document.getElementById('paymentStep').style.display='none';
+  document.getElementById('successStep').style.display='none';
+  document.getElementById('cartitems').innerHTML=cart.length
+    ? cart.map((x,i)=>`<div class="cartrow"><span>${x.name} × ${x.qty}</span><b>$${(x.price*x.qty).toFixed(2)}</b></div>`).join('')
+    : '<p>Tu carrito está vacío.</p>';
+  document.getElementById('total').textContent=totalCart().toFixed(2);
+  document.getElementById('modal').style.display='flex';
+}
+function closeCart(){document.getElementById('modal').style.display='none'}
+function startCheckout(){
+  if(!cart.length){alert('Agrega al menos un producto al carrito.');return;}
+  document.getElementById('checkoutStep').style.display='none';
+  document.getElementById('customerStep').style.display='block';
+}
+const municipios={"Pinar del Río":["Consolación del Sur","Guane","La Palma","Los Palacios","Mantua","Minas de Matahambre","Pinar del Río","San Cristóbal","San Juan y Martínez","San Luis","Sandino","Viñales"],"Artemisa":["Alquízar","Artemisa","Bahía Honda","Bauta","Caimito","Candelaria","Guanajay","Güira de Melena","Mariel","San Antonio de los Baños","San Cristóbal"],"La Habana":["Arroyo Naranjo","Boyeros","Cerro","Cotorro","Diez de Octubre","Guanabacoa","Habana del Este","La Habana Vieja","La Lisa","Marianao","Playa","Plaza de la Revolución","Regla","San Miguel del Padrón","Centro Habana"],"Mayabeque":["Batabanó","Bejucal","Güines","Jaruco","Madruga","Melena del Sur","Nueva Paz","Quivicán","San José de las Lajas","San Nicolás","Santa Cruz del Norte"],"Matanzas":["Calimete","Cárdenas","Ciénaga de Zapata","Colón","Jagüey Grande","Jovellanos","Limonar","Los Arabos","Martí","Matanzas","Pedro Betancourt","Perico","Unión de Reyes"],"Villa Clara":["Caibarién","Camajuaní","Cifuentes","Corralillo","Encrucijada","Manicaragua","Placetas","Quemado de Güines","Remedios","Ranchuelo","Sagua la Grande","Santa Clara","Santo Domingo"],"Cienfuegos":["Abreus","Aguada de Pasajeros","Cienfuegos","Cruces","Cumanayagua","Palmira","Rodas","Lajas"],"Sancti Spíritus":["Cabaiguán","Fomento","Jatibonico","La Sierpe","Sancti Spíritus","Taguasco","Trinidad","Yaguajay"],"Ciego de Ávila":["Baraguá","Bolivia","Ciego de Ávila","Chambas","Ciro Redondo","Florencia","Majagua","Morón","Primero de Enero","Venezuela"],"Camagüey":["Camagüey","Carlos Manuel de Céspedes","Esmeralda","Florida","Guáimaro","Jimaguayú","Minas","Najasa","Nuevitas","Santa Cruz del Sur","Sibanicú","Sierra de Cubitas","Vertientes"],"Las Tunas":["Amancio","Colombia","Jesús Menéndez","Jobabo","Las Tunas","Majibacoa","Manatí","Puerto Padre"],"Holguín":["Antilla","Báguanos","Banes","Cacocum","Calixto García","Cueto","Frank País","Gibara","Holguín","Mayarí","Moa","Rafael Freyre","Sagua de Tánamo","Urbano Noris"],"Granma":["Bartolomé Masó","Bayamo","Buey Arriba","Campechuela","Cauto Cristo","Guisa","Jiguaní","Manzanillo","Media Luna","Niquero","Pilón","Río Cauto","Yara"],"Santiago de Cuba":["Contramaestre","Guamá","Mella","Palma Soriano","San Luis","Santiago de Cuba","Segundo Frente","Songo-La Maya","Tercer Frente"],"Guantánamo":["Baracoa","Caimanera","El Salvador","Guantánamo","Imías","Maisí","Manuel Tames","Niceto Pérez","San Antonio del Sur","Yateras"],"Isla de la Juventud":["Nueva Gerona","La Fe"]};
+function updateMunicipios(){
+  const p=document.getElementById('province').value;
+  const list=municipios[p]||[];
+  document.getElementById('municipality').innerHTML='<option value="">Selecciona municipio</option>'+list.map(x=>`<option>${x}</option>`).join('');
+}
+function showPayment(){
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const province=document.getElementById('province').value;
+  const municipality=document.getElementById('municipality').value;
+  const address=document.getElementById('address').value.trim();
+  if(!name||!phone||!province||!municipality||!address){
+    alert('Completa todos los datos de entrega.'); return;
+  }
+  const subtotal=totalCart();
+  document.getElementById('orderSummary').innerHTML=`
+    <div class="orderbox"><b>Resumen del pedido</b><br>
+    ${cart.map(x=>`${x.name} × ${x.qty} — $${(x.price*x.qty).toFixed(2)}`).join('<br>')}
+    <hr><b>Total: $${subtotal.toFixed(2)}</b></div>`;
+  document.getElementById('customerStep').style.display='none';
+  document.getElementById('paymentStep').style.display='block';
+}
+function nextOrderNumber(){
+  const n=Number(localStorage.getItem('vcOrderSeq')||0)+1;
+  localStorage.setItem('vcOrderSeq',String(n));
+  return 'VC-'+String(n).padStart(6,'0');
+}
+function confirmOrder(){
+  const order={
+    id:'PENDIENTE',
+    date:new Date().toLocaleString('es-ES'),
+    customer:{
+      name:document.getElementById('custName').value.trim(),
+      phone:document.getElementById('custPhone').value.trim(),
+      province:document.getElementById('province').value,
+      municipality:document.getElementById('municipality').value,
+      address:document.getElementById('address').value.trim()
+    },
+    items:cart.map(x=>({...x})),
+    total:totalCart(),
+    payment:'Zelle — thomasroberthidalgo@gmail.com',
+    status:'Pendiente de verificación de pago'
+  };
+  const orders=JSON.parse(localStorage.getItem('vcOrders')||'[]');
+  orders.unshift(order);
+  localStorage.setItem('vcOrders',JSON.stringify(orders));
+  fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(order)})
+    .then(async r=>{if(!r.ok)throw new Error('server'); return r.json();})
+    .then(saved=>{document.getElementById('orderNumber').textContent=saved.id; document.getElementById('successDetails').innerHTML=`<b>${saved.customer.name}</b><br>${saved.customer.phone}<br>${saved.customer.province} — ${saved.customer.municipality}<br>${saved.customer.address}<br><br><b>Total: $${Number(saved.total).toFixed(2)}</b>`;})
+    .catch(()=>{document.getElementById('orderNumber').textContent='PENDIENTE';});
+  document.getElementById('paymentStep').style.display='none';
+  document.getElementById('successStep').style.display='block';
+  document.getElementById('orderNumber').textContent=order.id;
+  document.getElementById('successDetails').innerHTML=
+    `<b>${order.customer.name}</b><br>${order.customer.phone}<br>${order.customer.province} — ${order.customer.municipality}<br>${order.customer.address}<br><br><b>Total: $${order.total.toFixed(2)}</b>`;
+  cart=[];
+  update();
+}
+async function adminLogin(){
+  const password=document.getElementById('adminKey').value;
+  if(!password){alert('Escribe la contraseña.');return;}
+  const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
+  if(!r.ok){alert('Contraseña incorrecta o administrador no configurado.');return;}
+  const d=await r.json(); sessionStorage.setItem('vcAdminToken',d.token); document.getElementById('adminKey').value=''; await loadAdminOrders();
+}
+async function openAdmin(){
+  document.getElementById('adminModal').style.display='flex';
+  if(sessionStorage.getItem('vcAdminToken')) await loadAdminOrders();
+}
+async function loadAdminOrders(){
+  const token=sessionStorage.getItem('vcAdminToken');
+  if(!token){document.getElementById('adminOrders').innerHTML='<p>Inicia sesión para ver los pedidos.</p>';return;}
+  try{ const r=await fetch('/api/orders',{headers:{'Authorization':'Bearer '+token}}); if(r.status===401){sessionStorage.removeItem('vcAdminToken');document.getElementById('adminOrders').innerHTML='<p>Sesión expirada. Inicia sesión nuevamente.</p>';return;} const orders=await r.json();
+  document.getElementById('adminOrders').innerHTML=orders.length?orders.map(o=>`
+    <div class="orderbox"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>${o.id}</b><span class="status">${o.status}</span></div>
+    <p><b>${o.customer.name}</b> · ${o.customer.phone}<br>${o.customer.province}, ${o.customer.municipality}<br>${o.customer.address}</p>
+    <p>${o.items.map(x=>`${x.name} × ${x.qty}`).join('<br>')}</p><b>Total: $${Number(o.total).toFixed(2)}</b><br><small>${o.date}</small>
+    <div style="margin-top:10px"><select onchange="changeStatus('${o.id}',this.value)" class="forminput" style="margin:0;width:auto">
+    ${['Pendiente de verificación de pago','Pago recibido','En preparación','Enviado','Entregado'].map(x=>`<option ${o.status===x?'selected':''}>${x}</option>`).join('')}</select></div></div>`).join(''):'<p>No hay pedidos registrados todavía.</p>';
+  }catch(e){document.getElementById('adminOrders').innerHTML='<p>No se pudo conectar con el servidor.</p>';}
+}
+async function changeStatus(id,status){
+  const token=sessionStorage.getItem('vcAdminToken');
+  const r=await fetch('/api/orders/'+encodeURIComponent(id),{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({status})});
+  if(r.status===401){sessionStorage.removeItem('vcAdminToken');alert('Sesión expirada.');return;} if(!r.ok)alert('No se pudo actualizar el pedido.'); else loadAdminOrders();
+}
+function closeAdmin(){document.getElementById('adminModal').style.display='none'}
+
+render();
+</script>
+</body>
+</html>
